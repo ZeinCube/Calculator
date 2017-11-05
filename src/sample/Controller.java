@@ -17,23 +17,22 @@ public class Controller {
 
 
     private void calculate(){
-        int i = 1;
         while(arrayOfNumbers.numbers.size()>1){
             switch (arrayOfNumbers.get(0).whatToDo){
                     case "+" :
-                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()+arrayOfNumbers.get(i).number.doubleValue());
+                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()+arrayOfNumbers.get(1).number.doubleValue());
                         break;
 
                     case "-" :
-                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()-arrayOfNumbers.get(i).number.doubleValue());
+                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()-arrayOfNumbers.get(1).number.doubleValue());
                         break;
 
                     case "*" :
-                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()*arrayOfNumbers.get(i).number.doubleValue());
+                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()*arrayOfNumbers.get(1).number.doubleValue());
                         break;
 
                     case "/" :
-                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()/arrayOfNumbers.get(i).number.doubleValue());
+                        arrayOfNumbers.changeFirst(arrayOfNumbers.get(0).number.doubleValue()/arrayOfNumbers.get(1).number.doubleValue());
                         break;
 
                     case "" :
@@ -71,7 +70,6 @@ public class Controller {
             
         }
     }
-
     private void handleAction(String simbol){
         NumDo enteredNumDo;
         if(isRedactingLastAction&arrayOfNumbers.numbers.size()!=2){
