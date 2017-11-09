@@ -18,8 +18,10 @@ public class NumDo{
 
     static Number roundOf(Number number){
         if (number.doubleValue()==number.longValue()){
+            Controller.isDouble = false;
             return number.longValue();
         }else{
+            Controller.isDouble = true;
             return number.doubleValue();
         }
     }

@@ -19,4 +19,7 @@ public class Memory {
     public void setMemory(Number number){
         memory = number.doubleValue();
     }
+//    public Number getMemory (){
+//
+//    }
 }

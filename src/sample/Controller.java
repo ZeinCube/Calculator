@@ -15,6 +15,7 @@ public class Controller {
     public TextField historyField;
     private Memory memory = new Memory();
     private boolean isBlockedButOfAction = false;
+    static boolean isDouble = false;
 
 
     private void calculate(){
@@ -46,21 +47,21 @@ public class Controller {
 
     private boolean isNullField(){
         boolean result = false;
-        if(resultField.getText().equals("0")|resultField.getText().equals("Введены неверные данные")){
+        if(resultField.getText().equals("0") || resultField.getText().equals("Введены неверные данные")){
             result=true;
         }
         return result;
     }
 
     private void numButClick(String number){
-        isRedactingLastAction = false;
-        if(isBlockedButOfAction)
-            isBlockedButOfAction = false;
-        if(isNullField())
+        isBlockedButOfAction = false;
+        if(isNullField()) {
             resultField.setText("");
+            currentNumberStr = number;
+        }
         resultField.setText(resultField.getText() + number);
-        historyField.setText(historyField.getText() + number);
-        currentNumberStr = currentNumberStr +number;
+        historyField.setText(historyField.getText() + number);//TO APPEND
+        currentNumberStr += number;
     }
 
     private void rewrite(){
@@ -69,10 +70,17 @@ public class Controller {
     }
 
     public void backSpClick(MouseEvent mouseEvent) {
-        if (!isNullField()){
-            
+        if (!(isNullField()||isRedactingLastAction)){
+            if(currentNumberStr.length()>=1){
+                currentNumberStr = resultField.getText(resultField.getLength()-currentNumberStr.length()+1,resultField.getLength()-1);
+                resultField.setText(resultField.getText(0,resultField.getLength()-1));
+                historyField.setText(historyField.getText(0,historyField.getLength()-1));
+            }
+        }else{
+            resultField.setText(resultField.getText(0,resultField.getLength()-1)+"0");
         }
     }
+
     private void handleAction(String simbol) {
         if (!isBlockedButOfAction) {
             NumDo enteredNumDo;
@@ -95,9 +103,8 @@ public class Controller {
                         history.add(simbol);
                     }
                     isRedactingLastAction = true;
-                    historyField.setText(history.toString());
                     calculate();
-                    resultField.setText(NumDo.roundOf(arrayOfNumbers.numbers.get(0).number).toString() + arrayOfNumbers.numbers.get(0).whatToDo);
+                    rewrite();
                     currentNumberStr = "";
                 } else {
                     if (!currentNumberStr.equals("")) {
@@ -152,30 +159,32 @@ public class Controller {
     }
 
     public void butSqrtClick(MouseEvent mouseEvent) {
-        if(!isNullField()&arrayOfNumbers.get(arrayOfNumbers.getSize()-1).number.doubleValue()>=0&!isBlockedButOfAction) {
-            if (arrayOfNumbers.numbers.size() == 0) {
-                resultField.setText("0");
-            }
+        if (!isNullField()) {
+            if (Double.parseDouble(currentNumberStr) >= 0 & !isBlockedButOfAction) {
+                if (arrayOfNumbers.numbers.size() == 0) {
+                    resultField.setText("0");
+                }
 
-            if (currentNumberStr.length() != 0) {
-                history.add(new NumDo(Double.parseDouble(currentNumberStr), "√"));
-                currentNumberStr = Double.toString(Math.sqrt(Double.parseDouble(currentNumberStr)));
-                arrayOfNumbers.numbers.add(new NumDo(NumDo.roundOf(Double.parseDouble(currentNumberStr))));
-            } else {
-                currentNumberStr = Double.toString(Math.sqrt(arrayOfNumbers.get(0).number.doubleValue()));
-                history.add(new NumDo(Double.parseDouble(currentNumberStr), "√"));
-                arrayOfNumbers.numbers.add(new NumDo(NumDo.roundOf(Double.parseDouble(currentNumberStr))));
-            }
-            isRedactingLastAction = true;
-            currentNumberStr = "";
-            rewrite();
-        }else{
-            if(arrayOfNumbers.get(arrayOfNumbers.getSize()-1).number.doubleValue()<0) {
-                history.clear();
-                arrayOfNumbers.clear();
+                if (currentNumberStr.length() != 0) {
+                    history.add(new NumDo(Double.parseDouble(currentNumberStr), "√"));
+                    currentNumberStr = Double.toString(Math.sqrt(Double.parseDouble(currentNumberStr)));
+                    arrayOfNumbers.add(new NumDo(NumDo.roundOf(Double.parseDouble(currentNumberStr))));
+                } else {
+                    currentNumberStr = Double.toString(Math.sqrt(arrayOfNumbers.get(0).number.doubleValue()));
+                    history.add(new NumDo(Double.parseDouble(currentNumberStr), "√"));
+                    arrayOfNumbers.add(new NumDo(NumDo.roundOf(Double.parseDouble(currentNumberStr))));
+                }
+                isRedactingLastAction = true;
+                //currentNumberStr = "";
                 rewrite();
-                resultField.setText("Введены неверные данные");
-                isBlockedButOfAction = true;
+            } else {
+                if (arrayOfNumbers.get(arrayOfNumbers.getSize() - 1).number.doubleValue() < 0) {
+                    history.clear();
+                    arrayOfNumbers.clear();
+                    rewrite();
+                    resultField.setText("Введены неверные данные");
+                    isBlockedButOfAction = true;
+                }
             }
         }
     }
@@ -231,11 +240,12 @@ public class Controller {
         }
     }
 
-    public void butPMClick(MouseEvent mouseEvent) {
+    public void butPlusMinusClick(MouseEvent mouseEvent) {
     }
 
     public void butDotClick(MouseEvent mouseEvent) {
-        if(!isRedactingLastAction){
+        if(!isRedactingLastAction&!isDouble){
+            isDouble = true;
             currentNumberStr = currentNumberStr.concat(".");
             resultField.appendText(".");
             historyField.appendText(".");
