@@ -16,6 +16,7 @@ public class Controller {
     private Memory memory = new Memory();
     private boolean isBlockedButOfAction = false;
     static boolean isDouble = false;
+    static boolean isResult = false;
 
 
     private void calculate(){
@@ -43,6 +44,7 @@ public class Controller {
                 }
             }
             currentNumberStr = arrayOfNumbers.numbers.toString();
+        isRedactingLastAction = true;
     }
 
     private boolean isNullField(){
@@ -58,10 +60,13 @@ public class Controller {
         if(isNullField()) {
             resultField.setText("");
             currentNumberStr = number;
+            history.add(number);
+            resultField.setText(currentNumberStr);
+        }else {
+            resultField.appendText(number);
+            historyField.appendText(number);
+            currentNumberStr += number;
         }
-        resultField.setText(resultField.getText() + number);
-        historyField.setText(historyField.getText() + number);//TO APPEND
-        currentNumberStr += number;
     }
 
     private void rewrite(){
@@ -72,6 +77,7 @@ public class Controller {
     public void backSpClick(MouseEvent mouseEvent) {
         if (!(isNullField()||isRedactingLastAction)){
             if(currentNumberStr.length()>=1){
+
                 currentNumberStr = resultField.getText(resultField.getLength()-currentNumberStr.length()+1,resultField.getLength()-1);
                 resultField.setText(resultField.getText(0,resultField.getLength()-1));
                 historyField.setText(historyField.getText(0,historyField.getLength()-1));
@@ -226,7 +232,7 @@ public class Controller {
         handleAction("-");
     }
 
-    public void butMinDegClick(MouseEvent mouseEvent) {
+    public void butRevertClick(MouseEvent mouseEvent) {
     }
 
     public void butMPlusClick(MouseEvent mouseEvent) {
@@ -244,7 +250,7 @@ public class Controller {
     }
 
     public void butDotClick(MouseEvent mouseEvent) {
-        if(!isRedactingLastAction&!isDouble){
+        if(!isRedactingLastAction&!isDouble&!isNullField()&!isResult){
             isDouble = true;
             currentNumberStr = currentNumberStr.concat(".");
             resultField.appendText(".");
